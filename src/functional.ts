@@ -8,7 +8,8 @@ export interface Component extends HTMLElement {
 export function createComponent(
   tag: string,
   props: string[],
-  render: RenderFn
+  render: RenderFn,
+  effects?: (e: ShadowRoot) => () => void
 ) {
   // Only register component once
   if (customElements.get(tag)) {
@@ -21,6 +22,7 @@ export function createComponent(
 
     static observedAttributes = props;
     private _listening: boolean = false;
+    private _cleanup?: () => void;
 
     constructor() {
       super();
@@ -33,16 +35,27 @@ export function createComponent(
       if (oldVal === newVal) return;
 
       this._state[name] = newVal;
+
+      // don't render until we've had our intial render
       if (this._listening) {
-        console.log("attribute triggered render", name);
+        console.log("attribute changed", name);
         this.render();
       }
     }
 
     render() {
+      if (this._cleanup) {
+        this._cleanup();
+      }
+
       const shadow = this.shadowRoot;
       if (shadow) {
         shadow.innerHTML = render(this._state);
+        if (effects) {
+          // effects returns a cleanup fn
+          // inspired by useEffect in React
+          this._cleanup = effects(shadow);
+        }
       }
       console.log("render");
     }
@@ -54,6 +67,10 @@ export function createComponent(
     }
 
     disconnectedCallback() {
+      if (this._cleanup) {
+        this._cleanup();
+      }
+
       console.log("disconnected");
       this._listening = false;
     }
