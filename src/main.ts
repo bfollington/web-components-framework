@@ -1,13 +1,13 @@
 import { createComponent } from "./createComponent";
-import { createTemplateComponent } from "./createTemplatedComponent";
+import { createTemplatedComponent } from "./createTemplatedComponent";
 
-createTemplateComponent(
+createTemplatedComponent(
   "numeric-value",
   ["value"],
   `<code><slot name="value"></slot></code>`
 );
 
-createTemplateComponent(
+createTemplatedComponent(
   "test-component",
   ["name", "age"],
   `<div>

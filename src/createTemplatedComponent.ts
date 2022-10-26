@@ -1,4 +1,4 @@
-export function createTemplateComponent(
+export function createTemplatedComponent(
   tag: string,
   props: string[],
   template: string,
@@ -10,10 +10,6 @@ export function createTemplateComponent(
     return;
   }
 
-  document.body.insertAdjacentHTML(
-    "afterbegin",
-    `<template id="${tag}">${template}</template>`
-  );
   const templateElement = document.createElement("template");
   templateElement.id = tag;
   templateElement.innerHTML = template;
