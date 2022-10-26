@@ -1,6 +1,6 @@
 import { Component, createComponent } from "./functional";
 
-createComponent("test-component", ({ name }) => `<div>${name}</div>`);
+createComponent("test-component", ["name"], ({ name }) => `<div>${name}</div>`);
 
 const mount = document.querySelector("#mount");
 if (mount) {

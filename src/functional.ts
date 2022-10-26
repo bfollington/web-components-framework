@@ -5,8 +5,9 @@ export interface Component extends HTMLElement {
   state: State;
 }
 
-export function createComponent<S extends State>(
+export function createComponent(
   tag: string,
+  props: string[],
   render: RenderFn
 ) {
   // Only register component once
@@ -18,7 +19,8 @@ export function createComponent<S extends State>(
   class InnerComponent extends HTMLElement {
     _state: { [key: string]: string } = {};
 
-    static observedAttributes = ["name"];
+    static observedAttributes = props;
+    private _listening: boolean = false;
 
     constructor() {
       super();
@@ -35,7 +37,7 @@ export function createComponent<S extends State>(
       if (oldVal === newVal) return;
 
       this._state[name] = newVal;
-      if (this.isConnected) {
+      if (this._listening) {
         console.log("attribute triggered render", name);
         this.render();
       }
@@ -46,12 +48,18 @@ export function createComponent<S extends State>(
       if (shadow) {
         shadow.innerHTML = render(this._state);
       }
-      console.log("did render");
+      console.log("render");
     }
 
     connectedCallback() {
-      console.log("connected render");
+      console.log("connected");
+      this._listening = true;
       this.render();
+    }
+
+    disconnectedCallback() {
+      console.log("disconnected");
+      this._listening = false;
     }
   }
 
