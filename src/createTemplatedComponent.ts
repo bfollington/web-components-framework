@@ -1,14 +1,7 @@
-type State = any;
-type RenderFn = (a: State) => string;
-
-export interface Component extends HTMLElement {
-  state: State;
-}
-
-export function createComponent(
+export function createTemplateComponent(
   tag: string,
   props: string[],
-  render: RenderFn,
+  template: string,
   effects?: (e: ShadowRoot) => () => void
 ) {
   // Only register component once
@@ -16,6 +9,15 @@ export function createComponent(
     console.log("already registered", tag);
     return;
   }
+
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `<template id="${tag}">${template}</template>`
+  );
+  const templateElement = document.createElement("template");
+  templateElement.id = tag;
+  templateElement.innerHTML = template;
+  document.body.insertAdjacentElement("afterbegin", templateElement);
 
   class InnerComponent extends HTMLElement {
     _state: { [key: string]: string } = {};
@@ -50,7 +52,9 @@ export function createComponent(
 
       const shadow = this.shadowRoot;
       if (shadow) {
-        shadow.innerHTML = render(this._state);
+        shadow.innerHTML = ``;
+        shadow.appendChild(templateElement.content.cloneNode(true));
+
         if (effects) {
           // effects returns a cleanup fn
           // inspired by useEffect in React

@@ -1,18 +1,20 @@
-import { createComponent } from "./functional";
+import { createComponent } from "./createComponent";
+import { createTemplateComponent } from "./createTemplatedComponent";
 
-createComponent(
+createTemplateComponent(
   "numeric-value",
   ["value"],
-  ({ value }) => `<code>${value}</code>`
+  `<code><slot name="value"></slot></code>`
 );
 
-createComponent(
+createTemplateComponent(
   "test-component",
   ["name", "age"],
-  ({ name, age }) =>
-    `<div>
-      ${name}
-      (<numeric-value value="${age}"></numeric-value>)
+  `<div>
+      <slot name="name"></slot>
+      (<numeric-value>
+        <span slot="value"><slot name="age"></slot></span>
+      </numeric-value>)
     </div>`
 );
 
@@ -21,17 +23,17 @@ createComponent(
   ["base-age"],
   (props) =>
     `<div>
-      <test-component
-        name="Ben" 
-        age="${parseInt(props["base-age"]) - 2}">
+      <test-component>
+        <span slot="name">Ben</span>
+        <span slot="age">${parseInt(props["base-age"]) - 1}</span> ">
       </test-component>
-      <test-component
-        name="Bob"
-        age="${parseInt(props["base-age"]) - 1}">
+      <test-component>
+        <span slot="name">Bob</span>
+        <span slot="age">${parseInt(props["base-age"]) - 2}</span> ">
       </test-component>
-      <test-component
-        name="Mel"
-        age="${parseInt(props["base-age"]) + 1}">
+      <test-component>
+        <span slot="name">Mel</span>
+        <span slot="age">${parseInt(props["base-age"]) + 2}</span> ">
       </test-component>
       <button id="add-button">+</button>
     </div>`,
