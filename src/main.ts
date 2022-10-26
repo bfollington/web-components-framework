@@ -1,9 +1,19 @@
 import { createComponent } from "./functional";
 
 createComponent(
+  "numeric-value",
+  ["value"],
+  ({ value }) => `<code>${value}</code>`
+);
+
+createComponent(
   "test-component",
   ["name", "age"],
-  ({ name, age }) => `<div>${name} (${age})</div>`
+  ({ name, age }) =>
+    `<div>
+      ${name}
+      (<numeric-value value="${age}"></numeric-value>)
+    </div>`
 );
 
 createComponent(
