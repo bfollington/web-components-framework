@@ -1,10 +1,25 @@
-import { Component, createComponent } from "./functional";
+import { createComponent } from "./functional";
 
-createComponent("test-component", ["name"], ({ name }) => `<div>${name}</div>`);
+createComponent(
+  "test-component",
+  ["name", "age"],
+  ({ name, age }) => `<div>${name} (${age})</div>`
+);
+
+createComponent(
+  "parent-component",
+  [],
+  (_) =>
+    `<div>
+      <test-component name="Ben" age="99"></test-component>
+      <test-component name="Bob" age="98"></test-component>
+      <test-component name="Mel" age="101"></test-component>
+    </div>`
+);
 
 const mount = document.querySelector("#mount");
 if (mount) {
-  mount.innerHTML = `<test-component id="update-me" name="Ben"></test-component>`;
+  mount.innerHTML = `<parent-component></parent-component>`;
 }
 
 // const c = document.querySelector("#update-me");

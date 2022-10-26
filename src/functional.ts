@@ -26,10 +26,6 @@ export function createComponent(
       super();
 
       this.attachShadow({ mode: "open" });
-
-      // InnerComponent.observedAttributes.forEach(a => {
-      //   this._state[a] = this.getAttribute('a')
-      // })
     }
 
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
